@@ -114,7 +114,7 @@ public class SaveImage extends CordovaPlugin {
 
         // Generate image file name using current date and time
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(new Date());
-        File newFile = new File(dstFolder.getPath() + File.separator + "ALPEREN_" + timeStamp + ".jpg");
+        File newFile = new File(dstFolder.getPath() + File.separator + name + ".jpg");
 
         // Read and write image files
         FileChannel inChannel = null;
