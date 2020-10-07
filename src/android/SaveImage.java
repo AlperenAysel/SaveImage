@@ -35,9 +35,9 @@ public class SaveImage extends CordovaPlugin {
     
 
     @Override
-    public boolean execute(String name, String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+    public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
         if (action.equals(ACTION)) {
-            saveImageToGallery(name, args, callbackContext);
+            saveImageToGallery(args, callbackContext);
             return true;
         } else {
             return false;
@@ -52,7 +52,7 @@ public class SaveImage extends CordovaPlugin {
      *
      * args[0] filePath         file path string to image file to be saved to gallery
      */  
-    private void saveImageToGallery(String name, JSONArray args, CallbackContext callback) throws JSONException {
+    private void saveImageToGallery(JSONArray args, CallbackContext callback) throws JSONException {
     	this.filePath = args.getString(0);
     	this.callbackContext = callback;
         Log.d("SaveImage", "SaveImage in filePath: " + filePath);
@@ -64,7 +64,7 @@ public class SaveImage extends CordovaPlugin {
         
         if (PermissionHelper.hasPermission(this, WRITE_EXTERNAL_STORAGE)) {
         	Log.d("SaveImage", "Permissions already granted, or Android version is lower than 6");
-        	performImageSave(name);
+        	performImageSave();
         } else {
         	Log.d("SaveImage", "Requesting permissions for WRITE_EXTERNAL_STORAGE");
         	PermissionHelper.requestPermission(this, WRITE_PERM_REQUEST_CODE, WRITE_EXTERNAL_STORAGE);
@@ -75,7 +75,11 @@ public class SaveImage extends CordovaPlugin {
     /**
      * Save image to device gallery
      */
-    private void performImageSave(String name) throws JSONException {
+    String fileName = "temp";
+    public void setFileName(String name) {
+	    fileName = name;
+    }
+    private void performImageSave() throws JSONException {
         // create file from passed path
         File srcFile = new File(filePath);
 
@@ -104,7 +108,7 @@ public class SaveImage extends CordovaPlugin {
      * @param dstFolder     Destination folder where to store file
      * @return File         The newly generated file in destination folder
      */
-    private File copyFile(String name, File srcFile, File dstFolder) {
+    private File copyFile(File srcFile, File dstFolder) {
         // if destination folder does not exist, create it
         if (!dstFolder.exists()) {
             if (!dstFolder.mkdir()) {
@@ -114,7 +118,7 @@ public class SaveImage extends CordovaPlugin {
 
         // Generate image file name using current date and time
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(new Date());
-        File newFile = new File(dstFolder.getPath() + File.separator + name + ".jpg");
+        File newFile = new File(dstFolder.getPath() + File.separator + fileName + ".jpg");
 
         // Read and write image files
         FileChannel inChannel = null;
