@@ -32,6 +32,7 @@ public class SaveImage extends CordovaPlugin {
     private final String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     private CallbackContext callbackContext;
     private String filePath;
+    private String fileName = "temp";
     
 
     @Override
@@ -75,9 +76,10 @@ public class SaveImage extends CordovaPlugin {
     /**
      * Save image to device gallery
      */
-    String fileName = "temp";
+    
     public void setFileName(String name) {
-	    fileName = name;
+ 	String[] arrOfStr = name.split("files/", 2); 
+ 	fileName = arrOfStr[1];
     }
     private void performImageSave() throws JSONException {
         // create file from passed path
@@ -115,10 +117,11 @@ public class SaveImage extends CordovaPlugin {
                 throw new RuntimeException("Destination folder does not exist and cannot be created.");
             }
         }
+	setFileName(filePath);
 
         // Generate image file name using current date and time
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmssSSS").format(new Date());
-        File newFile = new File(dstFolder.getPath() + File.separator + fileName + ".jpg");
+        File newFile = new File(dstFolder.getPath() + File.separator + fileName);
 
         // Read and write image files
         FileChannel inChannel = null;
