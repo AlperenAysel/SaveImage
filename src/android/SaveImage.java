@@ -90,7 +90,7 @@ public class SaveImage extends CordovaPlugin {
 
         try {
             // Create export file in destination folder (gallery)
-            File expFile = copyFile(name, srcFile, dstGalleryFolder);
+            File expFile = copyFile(srcFile, dstGalleryFolder);
 
             // Update image gallery
             scanPhoto(expFile);
